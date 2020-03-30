@@ -25,10 +25,6 @@ export default {
             type: String,
             default: '250px'
         },
-        color: {
-            type: String,
-            default: '#555555'
-        },
         autoResize: {
             type: Boolean,
             default: true
@@ -36,10 +32,6 @@ export default {
         chartData: {
             type: Object,
             required: true
-        },
-        name: {
-            type: String,
-            default: 'Datos'
         },
         max: {
             type: Number,
@@ -120,7 +112,7 @@ export default {
                     type: 'bar',
                     animationDuration: 1000,
                     animationEasing: 'cubicInOut',
-                    name: data.name || defaultName + index,
+                    name: data.name || (defaultName + index),
                     data: data.value
                 });
             });
@@ -198,7 +190,7 @@ export default {
                 const series = [];
                 this.chartData.series.forEach((data, index) => {
                     series.push({
-                        name: data.name || defaultName + index,
+                        name: data.name || (defaultName + index),
                         data: data.value
                     });
                 });

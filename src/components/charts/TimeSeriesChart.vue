@@ -7,6 +7,11 @@ import echarts from 'echarts';
 require('echarts/theme/macarons'); // echarts theme
 import resize from './mixins/resize';
 
+const defaultColor = '#555555';
+const defaultName = 'Datos';
+const defaultSymbol = 'none';
+const defaultAreaColor = 'transparent';
+
 export default {
     name: 'TimeSeriesChart',
 
@@ -21,13 +26,9 @@ export default {
             type: String,
             default: '100%'
         },
-        color: {
-            type: String,
-            default: '#00f'
-        },
-        areaColor: {
-            type: String,
-            default: 'rgba(255, 0, 0, 0.1)'
+        symbolSize: {
+            type: Number,
+            default: 8
         },
         autoResize: {
             type: Boolean,
@@ -35,18 +36,7 @@ export default {
         },
         chartData: {
             type: Object,
-            required: true,
-            validator: (prop) => {
-                /* console.log(prop); */
-                if (!prop.value || !prop.label) {
-                    return false;
-                }
-                return true;
-            }
-        },
-        name: {
-            type: String,
-            default: ''
+            required: true
         },
         max: {
             type: Number,
@@ -77,9 +67,6 @@ export default {
                 this.updateCharData();
             }
         },
-        color: function() {
-            this.updateColor();
-        },
         xlabel: function() {
             this.updateXlabel();
         }
@@ -100,6 +87,31 @@ export default {
             this.chart = echarts.init(this.$el, 'macarons');
             this.setOptions();
         },
+        buildSeries() {
+            const series = [];
+            this.chartData.series.forEach((data, index) => {
+                series.push({
+                    symbol: data.symbol || defaultSymbol,
+                    symbolSize: this.symbolSize,
+                    itemStyle: {
+                        color: data.color || defaultColor,
+                        lineStyle: {                                
+                            width: 4
+                        }
+                    },
+                    areaStyle: {
+                        color: data.areaColor || defaultAreaColor
+                    },
+                    smooth: true,
+                    type: 'line',
+                    animationDuration: 1000,
+                    animationEasing: 'cubicInOut',
+                    name: data.name || (defaultName + index),
+                    data: data.value
+                });
+            });
+            return series;
+        },
         setOptions() {
             this.chart.setOption({
                 xAxis: {
@@ -114,13 +126,7 @@ export default {
                     axisLabel: {
                         textStyle: {
                             color: '#999'
-                        }/* ,
-                        formatter(value) {
-                            if (value) {
-                                return Number(value).toFixed(0);
-                            }
-                            return value;
-                        } */
+                        }
                     },
                     axisTick: {
                         show: false
@@ -170,64 +176,22 @@ export default {
                         textStyle: {
                             color: '#999'
                         }
-                    },
-                    min: 0
-                    /* max: Math.ceil(this.max) */
+                    }/*,
+                    min: 0,
+                    max: Math.ceil(this.max) */
                 },
-                series: [{
-                    symbol: 'none',
-                    itemStyle: {
-                        color: this.color,
-                        lineStyle: {                                
-                            width: 4
-                        }
-                    },
-                    areaStyle: {
-                        color: this.areaColor
-                    },
-                    smooth: true,
-                    type: 'line',
-                    animationDuration: 1000,
-                    animationEasing: 'cubicInOut',
-                    name: this.name,
-                    data: this.chartData.value
-                }]
+                series: this.buildSeries()
             });
         },
 
         updateCharData() {
             if (this.chart) {
-                if (this.chartData.label.length !== this.chartData.value.length) {
-                    return;
-                }
                 this.chart.setOption({
                     xAxis: {
                         data: this.chartData.label,
                         name: this.xlabel
                     },
-                    series: [{
-                        name: this.name,
-                        data: this.chartData.value,
-                        itemStyle: {
-                            color: this.color
-                        },
-                        areaStyle: {
-                            color: this.areaColor
-                        }
-                    }]
-                });                
-            }            
-        },
-
-        updateColor() {
-            if (this.chart) {
-                this.chart.setOption({
-                    series: [{
-                        name: this.name,
-                        itemStyle: {
-                            color: this.color
-                        }
-                    }]
+                    series: this.buildSeries()
                 });                
             }            
         },

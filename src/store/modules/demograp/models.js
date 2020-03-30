@@ -6,6 +6,56 @@ import {
     timeWriter 
 } from '../abstract/models';
 
+class HourlyCountModel extends Model {
+    props = {
+        hours: {
+            writable: false,
+            api: 'hours',
+            type: String,
+            many: true
+        },
+        menCount: {
+            writable: false,
+            api: 'men_count',
+            type: Number,
+            many: true
+        },
+        womenCount: {
+            writable: false,
+            api: 'women_count',
+            type: Number,
+            many: true
+        }
+    }
+}
+
+const hourlyCountModel = new HourlyCountModel();
+
+class DailyCountModel extends Model {
+    props = {
+        dates: {
+            writable: false,
+            api: 'dates',
+            type: String,
+            many: true
+        },
+        menCount: {
+            writable: false,
+            api: 'men_count',
+            type: Number,
+            many: true
+        },
+        womenCount: {
+            writable: false,
+            api: 'women_count',
+            type: Number,
+            many: true
+        }
+    }
+}
+
+const dailyCountModel = new DailyCountModel();
+
 class AgeStatsModel extends Model {
     props = {
         counts: {
@@ -65,6 +115,18 @@ class DemograpModel extends Model {
             api: 'women_count',
             type: Number,
             default: 0
+        },
+        hourlyCount: {
+            writable: false,
+            api: 'hourly_count',
+            type: Object,
+            model: hourlyCountModel
+        },
+        dailyCount: {
+            writable: false,
+            api: 'daily_count',
+            type: Object,
+            model: dailyCountModel
         }
     }
 }
@@ -119,7 +181,7 @@ class DemograpFilter extends Model {
             api: 'min_pred_age',
             type: Number
         },
-        maxAge: {
+        maxPredAge: {
             writable: true,
             api: 'max_pred_age',
             type: Number

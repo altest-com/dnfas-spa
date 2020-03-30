@@ -64,7 +64,7 @@
                 :xs="24" 
                 :sm="16"
             >
-                <h3 class="mb-2">{{ chartsData[selStatChart].name }}</h3>
+                <h3 class="mb-2">{{ chartsData[selStatChart].title }}</h3>
                 <el-card 
                     class="mb-4" 
                     :style="{height: '380px'}"
@@ -84,11 +84,9 @@
                     </el-radio-group>
 
                     <time-series-chart
-                        v-if="chartsData[selStatChart].data.value.length"
+                        v-if="!chartsData[selStatChart].empty"
                         height="300px"
-                        :chart-data="chartsData[selStatChart].data"
-                        :color="chartsData[selStatChart].color"
-                        :name="chartsData[selStatChart].name"
+                        :chart-data="chartsData[selStatChart]"
                         :xlabel="statsResolution === 'day' ? 'Fecha' : 'Hora'"
                     >                
                     </time-series-chart>
@@ -438,25 +436,43 @@ export default {
         },
 
         chartsData() {
-            return [
-                {
+            return [{
+                title: 'Rostros detectados',
+                empty: this.facesCountStat.data.value.length === 0,
+                label: this.facesCountStat.data.label,
+                series: [{
                     name: 'Rostros detectados',
                     color: '#43a047',
-                    data: this.facesCountStat.data
-                }, {
+                    value: this.facesCountStat.data.value
+                }]
+            }, {
+                title: 'Fotogramas analizados',
+                empty: this.framesCountStat.data.value.length === 0,
+                label: this.framesCountStat.data.label,
+                series: [{
                     name: 'Fotogramas analizados',
                     color: '#409eff',
-                    data: this.framesCountStat.data
-                }, {
+                    value: this.framesCountStat.data.value
+                }]
+            }, {
+                title: 'Tiempo de análisis',
+                empty: this.processingTimeStat.data.value.length === 0,
+                label: this.processingTimeStat.data.label,
+                series: [{
                     name: 'Tiempo de análisis',
                     color: '#f56c6c',
-                    data: this.processingTimeStat.data
-                }, {
+                    value: this.processingTimeStat.data.value
+                }]
+            }, {
+                title: 'Tareas completadas',
+                empty: this.tasksCountStat.data.value.length === 0,
+                label: this.tasksCountStat.data.label,
+                series: [{
                     name: 'Tareas completadas',
                     color: '#e6a23c',
-                    data: this.tasksCountStat.data
-                }
-            ];
+                    value: this.tasksCountStat.data.value
+                }]
+            }];
         },
 
         totalStats() {

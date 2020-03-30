@@ -47,8 +47,42 @@
                         </div>
                     </div>
                 </div>                          
-            </el-card>
+            </el-card> 
         </div>
+
+        <el-card class="mt-3">
+            <h4 class="card-title mb-1"> 
+                {{ timeChartData[timeRes].title }} 
+            </h4>
+            <el-radio-group 
+                v-model="timeRes"
+                size="mini"
+                class="time-res mb-4"
+            >
+                <el-radio-button label="hourly">
+                    Por hora
+                </el-radio-button>
+                <el-radio-button label="daily">
+                    Por día
+                </el-radio-button>
+            </el-radio-group>
+
+            <time-series-chart
+                height="300px"
+                :xlabel="timeChartData[timeRes].xlabel"
+                :ylabel="timeChartData[timeRes].ylabel"
+                :chart-data="timeChartData[timeRes].chart"
+            ></time-series-chart>
+<!--             <empty
+                v-else
+                title="Sin datos"
+                message="No existen datos registrados para el período solicitado"
+                icon-size="3em"
+                height="300px"
+                icon="el-icon-data-analysis"
+                background="transparent"
+            ></empty> --> 
+        </el-card>
 
         <list-header 
             class="mb-3 mt-5"
@@ -111,8 +145,10 @@ import { mapGetters } from 'vuex';
 import ListHeader from '@/components/ListHeader';
 import BarChart from '@/components/charts/BarChart';
 import PieChart from '@/components/charts/PieChart';
+import TimeSeriesChart from '@/components/charts/TimeSeriesChart';
 import ToolButton from '@/components/ToolButton';
 import XlsSaver from '@/components/XlsSaver';
+/* import Empty from '@/components/Empty'; */
 import SplitView from '@/layout/components/SplitView';
 import DemograpFilter from './components/DemograpFilter';
 import DemograpList from './components/DemograpList';
@@ -129,12 +165,15 @@ export default {
         DemograpList,
         ToolButton,
         XlsSaver,
+        /* Empty, */
         BarChart,
-        PieChart
+        PieChart,
+        TimeSeriesChart
     },
 
     data() {
         return {
+            timeRes: 'hourly',
             panel: 'search',
             columns: columns
         };
@@ -171,6 +210,49 @@ export default {
                 },
                 title: 'Distribución por edad',
                 max: Math.round(1.2 * Math.max(menMax, womenMax))
+            };
+        },
+
+        timeChartData() {
+            return {
+                hourly: {
+                    chart: {
+                        label: this.demograp.hourlyCount.hours,
+                        series: [{
+                            name: 'Hombres',
+                            color: '#43a047',
+                            symbol: 'circle',
+                            value: this.demograp.hourlyCount.menCount
+                        }, {
+                            name: 'Mujeres',
+                            color: '#409eff',
+                            symbol: 'rect',
+                            value: this.demograp.hourlyCount.womenCount
+                        }]
+                    },
+                    xlabel: 'Hora del día',
+                    ylabel: 'Número de personas',
+                    title: 'Distribución por hora'
+                },
+                daily: {
+                    chart: {
+                        label: this.demograp.dailyCount.dates,
+                        series: [{
+                            name: 'Hombres',
+                            color: '#43a047',
+                            symbol: 'circle',
+                            value: this.demograp.dailyCount.menCount
+                        }, {
+                            name: 'Mujeres',
+                            color: '#409eff',
+                            symbol: 'rect',
+                            value: this.demograp.dailyCount.womenCount
+                        }]
+                    },
+                    xlabel: 'Fecha',
+                    ylabel: 'Número de personas',
+                    title: 'Distribución por día'
+                }                
             };
         },
 
@@ -305,6 +387,10 @@ export default {
         .value {
             font-weight: 700;
         }
+    }
+
+    .el-radio-group.time-res {        
+        width: 200px;
     }
 }
 

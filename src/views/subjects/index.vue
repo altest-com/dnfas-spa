@@ -2,51 +2,17 @@
 
 <split-view class="subjects-index">
     <template v-slot:main>
-        <template v-if="panel === 'search'">
-            <list-header 
-                class="mb-4"
-                :show-count="subjects.length"
-                :total-count="subjectsCount"
-                add-text="Nuevo Sujeto"
-                @create="onCreateSubject"
-            ></list-header>
+        <list-header 
+            class="mb-4"
+            :show-count="subjects.length"
+            :total-count="subjectsCount"
+            add-text="Nuevo Sujeto"
+            @create="onCreateSubject"
+        ></list-header>
 
-            <subjects-list 
-                :auto-update="autoUpdate"
-                :focus-id="curSubjectId"
-                @update:focus-id="onSubjectListChange"
-            ></subjects-list>
-        </template>
-
-        <template v-else-if="panel === 'details'">
-            <subject-faces
-                :subject-id="curSubjectId"
-            ></subject-faces>
-        </template>
-
-        <el-dialog
-            title="Advertencia"
-            :visible.sync="showDeleteDialog"
-            width="400px"
-            center
-        >
-            <p>
-                ¿Seguro deseas eliminar este registro de forma permanente? 
-                Se eliminará cualquier dato asociado.
-            </p>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="showDeleteDialog = false">
-                    Cancelar
-                </el-button>
-                <el-button 
-                    type="primary" 
-                    :disabled="loading"
-                    @click="onConfirmDelete"
-                >
-                    Confirmar
-                </el-button>
-            </span>
-        </el-dialog>
+        <subjects-list 
+            :auto-update="autoUpdate"
+        ></subjects-list>
     </template>
 
     <template v-slot:side-actions>
@@ -59,31 +25,6 @@
                 @click="onClearFilterClick"
             ></tool-button>
         </template>
-
-        <template v-else-if="panel === 'details'">
-            <div class="text-lg text-w6">Detalles</div>
-            <div class="flex-row">                
-                <tool-button
-                    class="ml-1"
-                    tooltip="Editar sujeto" 
-                    icon="el-icon-edit"
-                    @click="onSubjectEdit"
-                ></tool-button>
-                <tool-button
-                    class="ml-1"
-                    tooltip="Eliminar sujeto" 
-                    icon="el-icon-delete"
-                    @click="showDeleteDialog = true"
-                ></tool-button>
-                <tool-button
-                    class="ml-1"
-                    tooltip="Volver al listado" 
-                    icon="el-icon-close"
-                    @click="onCloseDetails"
-                ></tool-button>
-            </div>                 
-        </template>
-
         <template v-else-if="panel === 'editor'">
             <div class="text-lg text-w6">Editor</div>
             <div class="flex-row">
@@ -102,15 +43,10 @@
             v-if="panel === 'search'"
         ></subjects-filter>
 
-        <subject-details
-            v-else-if="panel === 'details'"
-            :subject-id="curSubjectId"
-        ></subject-details>
-
         <subject-editor
             v-else-if="panel === 'editor'"
-            :edit="curSubjectId !== newSubjectId" 
-            :subject-id="curSubjectId"
+            :edit="false" 
+            :subject-id="newSubjectId"
             @confirm="onSubjectEditorConfirm"
         ></subject-editor>
     </template>
@@ -127,8 +63,6 @@ import SplitView from '@/layout/components/SplitView';
 import SubjectsList from './components/SubjectsList';
 import SubjectsFilter from './components/SubjectsFilter';
 import SubjectEditor from './components/SubjectEditor';
-import SubjectDetails from './components/SubjectDetails';
-import SubjectFaces from './components/SubjectFaces';
 
 const newSubjectId = 'newId';
 
@@ -139,11 +73,9 @@ export default {
         SplitView,
         SubjectsList,
         SubjectsFilter,
-        ListHeader,
         SubjectEditor,
-        SubjectDetails,
-        ToolButton,
-        SubjectFaces
+        ListHeader,
+        ToolButton
     },
 
     data() {
@@ -151,7 +83,6 @@ export default {
             newSubjectId: newSubjectId,
             autoUpdate: false,
             panel: 'search',
-            curSubjectId: null,
             showDeleteDialog: false,
             loading: false
         };
@@ -172,12 +103,6 @@ export default {
 
     methods: {
 
-        onSubjectEdit() {
-            if (this.curSubjectId !== null) {
-                this.panel = 'editor';
-            }            
-        },
-
         onCreateSubject() {
             const subject = subjectModel.create();
             subject.id = this.newSubjectId;
@@ -185,58 +110,22 @@ export default {
                 item: subject,
                 persist: false
             }).then(() => {
-                this.curSubjectId = this.newSubjectId;
                 this.panel = 'editor';
             });          
         },
 
         onSubjectEditorConfirm(subjectId) {
-            if (this.panel === 'editor' && this.curSubjectId !== null) {
-                this.curSubjectId = subjectId;
-                this.panel = 'details';           
-                this.$store.dispatch('subjects/fetchItems');
-            }            
+            this.panel = 'search';           
+            this.$store.dispatch('subjects/fetchItems');           
         },
 
         onCancelSubjectEdit() {
-            if (this.panel === 'editor' && this.curSubjectId !== null) {                
-                if (this.curSubjectId === newSubjectId) {
-                    this.curSubjectId = null;
-                    this.panel = 'search';
-                } else {
-                    this.panel = 'details';
-                } 
-            }
-        },
-
-        onSubjectListChange(subjectId) {            
-            this.panel = subjectId === null ? 'search' : 'details';
-            this.curSubjectId = subjectId;
+            this.panel = 'search';
         },
 
         onClearFilterClick() {
             this.$store.dispatch('subjects/resetFilter');
             this.$store.dispatch('subjects/fetchItems');
-        },
-
-        onConfirmDelete() {
-            if (this.curSubjectId !== null && this.panel === 'details') {
-                this.loading = true;
-                this.$store.dispatch(
-                    'subjects/destroyItem', this.curSubjectId
-                ).then(() => {
-                    this.loading = false;
-                    this.curSubjectId = null;
-                    this.panel = 'search';
-                    this.showDeleteDialog = false;
-                    this.$store.dispatch('subjects/fetchItems');
-                });
-            }
-        },
-
-        onCloseDetails() {
-            this.panel = 'search';
-            this.curSubjectId = null;
         }
     }
 };

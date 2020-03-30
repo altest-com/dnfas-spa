@@ -1,4 +1,10 @@
-import { Model, dateReader, dateWriter } from '../abstract/models';
+import {
+    Model, 
+    dateReader, 
+    dateWriter, 
+    timeReader, 
+    timeWriter 
+} from '../abstract/models';
 
 class SubjectModel extends Model {
     SEX_MAN = 'man'
@@ -146,15 +152,33 @@ class SubjectFilter extends Model {
             api: 'last_name',
             type: String
         },
-        minTimestamp: {
+        minTime: {
             writable: true,
-            api: 'min_timestamp',
-            type: Date
+            api: 'min_time',
+            type: Date,
+            reader: timeReader,
+            writer: timeWriter
         },
-        maxTimestamp: {
+        maxTime: {
             writable: true,
-            api: 'max_timestamp',
-            type: Date
+            api: 'max_time',
+            type: Date,
+            reader: timeReader,
+            writer: timeWriter
+        },
+        minDate: {
+            writable: true,
+            api: 'min_date',
+            type: Date,
+            reader: dateReader,
+            writer: dateWriter
+        },
+        maxDate: {
+            writable: true,
+            api: 'max_date',
+            type: Date,
+            reader: dateReader,
+            writer: dateWriter
         },
         minAge: {
             writable: true,

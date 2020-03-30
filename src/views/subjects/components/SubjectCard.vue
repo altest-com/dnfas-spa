@@ -6,33 +6,35 @@
     :class="{'focus': focus}" 
     @click="$emit('click')"
 >
-    <el-card>
-        <image-overlay 
-            :image="image"
-            height="200px" 
-            width="100%"
-            background="rgba(0, 0, 0, 0.2)"
-        ></image-overlay>
+    <router-link :to="route">
+       <el-card>
+            <image-overlay 
+                :image="image"
+                height="200px" 
+                width="100%"
+                background="rgba(0, 0, 0, 0.2)"
+            ></image-overlay>
 
-        <div class="info px-2 py-2">
-            <div class="name pb-1">
-                {{ name }}
-            </div>
-            <div class="date">
-                {{ subject.timestamp | dateTimeFilter }}
-            </div>
-
-            <div class="stat-info small mr-2 mb-2">
-                <div>
-                    <i class="el-icon-camera-solid color-primary"></i>
-                    <span class="value">
-                        {{ subject.faces.length }}
-                    </span>
+            <div class="info px-2 py-2">
+                <div class="name pb-1">
+                    {{ name }}
                 </div>
-                <div class="label">rostros</div>                      
+                <div class="date">
+                    {{ subject.timestamp | dateTimeFilter }}
+                </div>
+
+                <div class="stat-info small mr-2 mb-2">
+                    <div>
+                        <i class="el-icon-camera-solid color-primary"></i>
+                        <span class="value">
+                            {{ subject.faces.length }}
+                        </span>
+                    </div>
+                    <div class="label">rostros</div>                      
+                </div>
             </div>
-        </div>
-    </el-card>
+        </el-card>
+    </router-link>    
 </div>
 
 </template>
@@ -73,6 +75,12 @@ export default {
         },        
         image() {
             return this.subject.image || defaultImage;
+        },
+        route() {
+            return {
+                name: 'SubjectDetails', 
+                params: { subjectId: this.subjectId }
+            };
         }
     }
 };

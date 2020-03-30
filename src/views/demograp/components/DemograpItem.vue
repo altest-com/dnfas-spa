@@ -1,9 +1,11 @@
 <template>
 
 <div class="demograp-item">
-    <img :src="subject.image" alt="">
-    <div class="mt-3 text-sm text-w6">{{ sex }}</div>
-    <div class="text-sm text-w6">{{ age }}</div>
+    <router-link :to="route">
+        <img :src="subject.image" alt="">
+        <div class="mt-3 text-sm text-w6">{{ sex }}</div>
+        <div class="text-sm text-w6">{{ age }}</div>
+    </router-link>    
 </div> 
 
 </template>
@@ -41,6 +43,12 @@ export default {
             const age = this.subject.predAge;
             const score = this.subject.predAgeVar.toFixed(1);
             return age ? `${age} ± ${score} años` : 'Edad no establecida';
+        },
+        route() {
+            return {
+                name: 'SubjectDetails', 
+                params: { subjectId: this.subject.id }
+            };
         }
     }
     
@@ -50,6 +58,9 @@ export default {
 <style lang="scss">
 
 .demograp-item {
+    &:hover {
+        cursor: pointer;
+    }
     display: flex;
     flex-flow: column nowrap;
     align-items: center;

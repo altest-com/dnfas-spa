@@ -146,36 +146,53 @@ class Model {
     }
 }
 
+const toIsoString = function(date) {
+    const tzo = -date.getTimezoneOffset();
+    const dif = tzo >= 0 ? '+' : '-';
+    const pad = function(num) {
+        const norm = Math.floor(Math.abs(num));
+        return (norm < 10 ? '0' : '') + norm;
+    };
+    return date.getFullYear() +
+        '-' + pad(date.getMonth() + 1) +
+        '-' + pad(date.getDate()) +
+        'T' + pad(date.getHours()) +
+        ':' + pad(date.getMinutes()) +
+        ':' + pad(date.getSeconds()) +
+        dif + pad(tzo / 60) +
+        ':' + pad(tzo % 60);
+};
+
 const timeReader = function(time) {
     if (!time) {
         return time;
     }
-    const d = new Date('1970-01-01T' + time);
-    return isNaN(d) ? time : d;
+    const date_ = new Date('1970-01-01T' + time);
+    return isNaN(date_) ? time : date_;
 };
 
 const timeWriter = function(date) {
     if (!date) {
         return date;
     }
-    const d = new Date(date);
-    return isNaN(d) ? date : d.toISOString().substring(11, 19);
+    const date_ = new Date(date);
+    return isNaN(date_) ? date : toIsoString(date_).substring(11, 19);
 };
 
 const dateReader = function(date) {
     if (!date) {
         return date;
     }
-    const d = new Date(date + 'T00:00:00');
-    return isNaN(d) ? date : d;
+    const date_ = new Date(date + 'T00:00:00');
+    return isNaN(date_) ? date : date_;
 };
 
 const dateWriter = function(date) {
     if (!date) {
         return date;
     }
-    const d = new Date(date);
-    return isNaN(d) ? date : d.toISOString().substring(0, 10);
+    const date_ = new Date(date);
+    return isNaN(date_) ? date : toIsoString(date_).substring(0, 10);
 };
 
 const numberReader = function(val) {

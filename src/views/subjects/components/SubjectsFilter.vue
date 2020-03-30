@@ -42,21 +42,35 @@
             ></el-input-number>
         </el-form-item>
 
-        <el-form-item label="Fecha y hora mínima">
-            <el-date-picker
-                type="datetime"
+        <el-form-item label="Rango de horario" class="range">
+            <el-time-picker
+                arrow-control
                 placeholder="Desde"
-                :value="filter.minTimestamp"
-                @input="val => onParamChange({minTimestamp: val})"  
-            ></el-date-picker>
+                :value="filter.minTime"
+                @input="val => onParamChange({minTime: val})"
+            ></el-time-picker>
+            <span class="px-2">—</span>
+            <el-time-picker
+                arrow-control
+                placeholder="Hasta"
+                :value="filter.maxTime"
+                @input="val => onParamChange({maxTime: val})"
+            ></el-time-picker>
         </el-form-item>
 
-        <el-form-item label="Fecha y hora máxima">
+        <el-form-item label="Rango de fechas" class="range">
             <el-date-picker
-                type="datetime"
+                type="date"
+                placeholder="Desde"
+                :value="filter.minDate"
+                @input="val => onParamChange({minDate: val})"  
+            ></el-date-picker>
+            <span class="px-2">—</span>
+            <el-date-picker
+                type="date"
                 placeholder="Hasta"
-                :value="filter.maxTimestamp"
-                @input="val => onParamChange({maxTimestamp: val})"
+                :value="filter.maxDate"
+                @input="val => onParamChange({maxDate: val})"  
             ></el-date-picker>
         </el-form-item>
 

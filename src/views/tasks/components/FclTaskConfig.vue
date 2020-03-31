@@ -42,20 +42,20 @@
     </el-form-item>    
 
     <el-form-item 
-        label="Umbral de similitud superior" 
-        prop="topDistThr"
+        label="Umbral de similitud" 
+        prop="distanceThr"
     >
         <el-slider
             :min="0"                    
             :max="0.9999"
             :step="0.01"
-            :value="config.topDistThr"                    
-            @input="val => onParamChange({topDistThr: val})"
+            :value="config.distanceThr"                    
+            @input="val => onParamChange({distanceThr: val})"
         ></el-slider>
     </el-form-item>
 
     <el-form-item 
-        label="Umbral de similitud inferior" 
+        label="Umbral de enlace" 
         prop="edgeThr"
     >
         <el-slider
@@ -66,36 +66,6 @@
             @input="val => onParamChange({edgeThr: val})"
         ></el-slider>
     </el-form-item>
-
-    <el-form-item 
-        label="Umbral de enlace completo" 
-        prop="similarityThr"
-    >
-        <el-slider
-            :min="0"                    
-            :max="0.9999"
-            :step="0.01"
-            :value="config.lowDistThr"                    
-            @input="val => onParamChange({lowDistThr: val})"
-        ></el-slider>
-    </el-form-item>
-
-    <el-form-item label="Tipo de enlace">
-        <el-select
-            clearable
-            default-first-option
-            placeholder="Seleccionar"
-            :value="config.linkage"
-            @change="val => onParamChange({linkage: val})"            
-        >
-            <el-option
-                v-for="choice in linkageChoices"
-                :key="choice.value"
-                :label="choice.label"
-                :value="choice.value"
-            ></el-option>
-        </el-select>
-    </el-form-item>   
 
     <el-form-item
         label="Memoria de seguimiento (horas)"

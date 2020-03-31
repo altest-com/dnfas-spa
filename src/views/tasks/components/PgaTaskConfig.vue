@@ -12,6 +12,24 @@
     :disabled="loading"
     @validate="onValidate" 
 >
+
+    <el-form-item
+        label="Método" 
+        prop="method"
+    >
+        <el-select
+            :value="config.method"
+            @change="val => onParamChange({method: val})"
+        >
+            <el-option
+                v-for="choice in methodChoices"
+                :key="choice.value"
+                :label="choice.label"
+                :value="choice.value"
+            ></el-option>
+        </el-select>
+    </el-form-item>
+
     <el-form-item
         label="Marca de tiempo mínima" 
         prop="minCreatedAt"
@@ -52,6 +70,10 @@
 
 <script>
 
+import { pgaTaskConfigModel } from '@/store/modules/tasks/models';
+
+const methodChoices = pgaTaskConfigModel.METHOD_CHOICES;
+
 const rules = {
 };
 
@@ -67,6 +89,7 @@ export default {
 
     data() {
         return {
+            methodChoices: methodChoices,
             loading: false,
             alert: null,
             rules: rules

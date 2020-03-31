@@ -134,8 +134,7 @@ export default {
                     axisLine: {
                         show: false
                     },
-                    z: 10,
-                    boundaryGap: false                 
+                    z: 10               
                 },
                 grid: {
                     show: false,

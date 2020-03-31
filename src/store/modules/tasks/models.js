@@ -109,7 +109,24 @@ class VhfTaskConfigModel extends VdfTaskConfigModel {
 const vhfTaskConfigModel = new VhfTaskConfigModel();
 
 class PgaTaskConfigModel extends Model {
+    METHOD_DNFAl = 'dnfal'
+    METHOD_AWS = 'aws'
+
+    METHOD_CHOICES = [{
+        value: this.METHOD_DNFAl, 
+        label: 'dnfal'
+    }, {
+        value: this.METHOD_AWS, 
+        label: 'aws'
+    }]
+
     props = {
+        method: {
+            writable: true,
+            api: 'method',
+            type: String,
+            choices: this.METHOD_CHOICES.map(c => c.value)
+        },
         minCreatedAt: {
             writable: true,
             api: 'min_created_at',
@@ -182,7 +199,6 @@ const vTaskInfoModel = new VTaskInfoModel();
 // =============================================================================
 
 class FclTaskConfigModel extends Model {
-
     LINKAGE_WARD = 'ward'
     LINKAGE_AVERAGE = 'average'
     LINKAGE_SINGLE = 'single'
@@ -203,15 +219,9 @@ class FclTaskConfigModel extends Model {
     }]
 
     props = {
-        topDistThr: {
+        distanceThr: {
             writable: true,
-            api: 'top_dist_thr',
-            type: Number,
-            default: 0.6
-        },
-        lowDistThr: {
-            writable: true,
-            api: 'low_dist_thr',
+            api: 'distance_thr',
             type: Number,
             default: 0.6
         },
@@ -220,13 +230,6 @@ class FclTaskConfigModel extends Model {
             api: 'edge_thr',
             type: Number,
             default: 0.5
-        },
-        linkage: {
-            writable: true,
-            api: 'linkage',
-            type: String,
-            choices: this.LINKAGE_CHOICES.map(c => c.value),
-            default: this.LINKAGE_WARD
         },
         memorySeconds: {
             writable: true,

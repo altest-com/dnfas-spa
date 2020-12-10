@@ -339,20 +339,6 @@ export default {
         flex-flow: row nowrap;
         justify-content: flex-start;
         align-items: flex-start;
-        .sex-info {
-            width: 100%;
-            padding-top: 36px;
-            .info-item {
-                padding: 4px 0;
-                display: flex;
-                justify-content: space-between;
-                font-size: 14px;
-            }
-            .value {
-                font-weight: 700;
-                color: #555;                
-            }
-        } 
     }
     .sex-chart {
         position: relative;

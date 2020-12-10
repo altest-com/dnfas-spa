@@ -15,6 +15,7 @@ const actions = {
             Api.post('login/', credentials)
                 .then(({ data }) => {
                     context.commit('SET_AUTH', data);
+                    Api.setHeader();
                     resolve(data);
                 })
                 .catch(() => {
